@@ -7,11 +7,15 @@ const r1 = readline.createInterface({
 
 const socket = new WebSocket("ws://localhost:3000");
 
+const username = process.argv[2] ?? "Anonymous"
+
 r1.on("line", (input)=>{
-    socket.send(input)
+    console.log(`you: ${input}`)
+    socket.send(JSON.stringify({user:username, text:input}))
 })
 
-socket.addEventListener("message",event=>{
+socket.addEventListener("message", (event)=>{
+
     console.log(event.data)
 })
 
