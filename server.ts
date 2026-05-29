@@ -25,7 +25,7 @@ Bun.serve<ClientData>({
         if (server.upgrade(req, { data: { username } })) {
             return;
         }
-        return new Response("Upgrade failed", { status: 500 });
+        return new Response("OK", { status: 200 });
     },
     websocket: {
         open(ws) {
