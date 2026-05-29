@@ -29,7 +29,7 @@ Bun.serve<ClientData>({
             clients.add(ws);
             for (const client of clients) {
                 if (client !== ws) {
-                    client.send(`${ws.data.username} joined`)
+                    client.send(`${ws.data.username} joined!`)
                 }
             }
         },
