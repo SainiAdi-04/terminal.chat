@@ -1,3 +1,7 @@
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught exception:", err)
+})
+
 import type { ServerWebSocket } from "bun";
 
 interface messageInterface {
