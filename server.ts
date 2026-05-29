@@ -14,6 +14,7 @@ const clients = new Set<ServerWebSocket<ClientData>>();
 //ws is a person specific object created everytime someone connects and has a lot of capabilities. They're different objects even though they're both of type ServerWebSocket.
 
 Bun.serve<ClientData>({
+    port: 3000,
     fetch(req, server) {
         const url = new URL(req.url)
         const username = url.searchParams.get("username") ?? "Anon"

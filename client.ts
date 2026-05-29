@@ -6,7 +6,7 @@ const r1 = readline.createInterface({
 })
 
 const username = process.argv[2] ?? "Anonymous"
-const socket = new WebSocket(`ws://localhost:3000?username=${username}`);
+const socket = new WebSocket(`wss://terminalchat-production-17.up.railway.app?username=${username}`);
 
 r1.on("line", (input)=>{
     process.stdout.write("\x1B[1A\x1B[2K")
