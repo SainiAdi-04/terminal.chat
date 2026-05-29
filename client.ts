@@ -5,9 +5,8 @@ const r1 = readline.createInterface({
     output: process.stdout
 })
 
-const socket = new WebSocket("ws://localhost:3000");
-
 const username = process.argv[2] ?? "Anonymous"
+const socket = new WebSocket(`ws://localhost:3000?username=${username}`);
 
 r1.on("line", (input)=>{
     console.log(`you: ${input}`)
