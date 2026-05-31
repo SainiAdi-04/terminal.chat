@@ -1,56 +1,165 @@
 # terminal.chat
 
-A minimal terminal chat app. Connect with friends over the internet directly from your terminal.
+A tiny terminal-based group chat app built with Bun, TypeScript, and WebSockets.
 
-## Usage
+Run the client, pick a name, and messages from other connected users appear directly in your terminal.
 
-Download the binary for your OS from the releases page, then:
+## Features
+
+- Terminal-first chat client
+- WebSocket server with join and leave notifications
+- Broadcasts each message to every other connected client
+- Health check endpoint at `/health`
+- Docker Compose setup for running the server locally
+
+## Requirements
+
+- [Bun](https://bun.sh)
+- Docker, optional, if you want to run the server in a container
+
+## Install
 
 ```bash
-# give it execute permissions (mac/linux)
-chmod +x terminal.chat
-
-# connect
-./terminal.chat yourname
+git clone https://github.com/SainiAdi-04/terminal.chat.git
+cd terminal.chat
+bun install
 ```
 
-That's it. You're in.
+## Run The Client
 
-## Commands
+The checked-in client connects to the hosted server at:
 
-There are no commands. Just type and hit enter.
+```text
+wss://terminal-chat-bp1v.onrender.com
+```
 
-## Building from source
-
-Requires [Bun](https://bun.sh).
+Start chatting with:
 
 ```bash
-# clone the repo
-git clone https://github.com/SainiAdi-04/terminal-chat.git
-cd terminal-chat
-
-# run the client directly
 bun run client.ts yourname
-
-# or compile your own binary
-bun build client.ts --compile --outfile terminal.chat
 ```
 
-## Running your own server
+Once connected, type a message and press Enter. Your own message is echoed as `you: ...`; messages from other users appear as `username: message`.
+
+## Run Your Own Server
+
+Start the server locally:
 
 ```bash
-# locally
 bun run server.ts
+```
 
-# with docker
+The server listens on `PORT` if set, otherwise it uses `3000`.
+
+```bash
+PORT=8080 bun run server.ts
+```
+
+You can also run it with Docker Compose:
+
+```bash
 docker compose up
 ```
 
-The server listens on `PORT` env var, defaulting to `3000`.
+With the default Docker Compose setup, the server is available on:
 
-## Stack
+```text
+ws://localhost:3000
+```
 
-- [Bun](https://bun.sh) — runtime and WebSocket server
+## Use A Local Server
+
+`client.ts` currently uses the hosted Render URL. To connect the client to a local server, change the WebSocket URL in `client.ts`:
+
+```ts
+const socket = new WebSocket(`ws://localhost:3000?username=${username}`);
+```
+
+Then run:
+
+```bash
+bun run server.ts
+bun run client.ts yourname
+```
+
+Open another terminal and run the client again with a different name to test chat between users.
+
+## Build A Binary
+
+Compile the client into a standalone executable:
+
+```bash
+bun build client.ts --compile --outfile terminal.chat
+```
+
+Then run it:
+
+```bash
+./terminal.chat yourname
+```
+
+On macOS or Linux, you may need to make it executable first:
+
+```bash
+chmod +x terminal.chat
+```
+
+## Server API
+
+### Health Check
+
+```text
+GET /health
+```
+
+Returns:
+
+```text
+ok
+```
+
+### WebSocket
+
+Connect with a username:
+
+```text
+ws://localhost:3000?username=yourname
+```
+
+Send chat messages as JSON:
+
+```json
+{
+  "user": "yourname",
+  "text": "hello"
+}
+```
+
+The server broadcasts messages to every connected client except the sender.
+
+## Project Structure
+
+```text
+.
+├── client.ts          # Terminal chat client
+├── server.ts          # Bun WebSocket server
+├── docker-compose.yml # Local container setup
+├── dockerfile         # Server container image
+├── package.json       # Bun scripts and dependencies
+└── tsconfig.json      # TypeScript config
+```
+
+## Scripts
+
+```bash
+bun run start
+```
+
+Runs the WebSocket server.
+
+## Tech Stack
+
+- [Bun](https://bun.sh) runtime and WebSocket server
 - TypeScript
-- Node `readline` — terminal input handling
-- Deployed on [Railway](https://railway.app)
+- Node `readline` for terminal input
+- Docker for local server containers
